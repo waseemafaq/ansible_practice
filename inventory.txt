@@ -1,2 +1,3 @@
 target1 ansible_host=192.168.29.93 ansible_ssh_pass=Shared@123
 target2 ansible_host=192.168.29.230 ansible_ssh_pass=Shared@123
+ubuntu1 ansible_host=192.168.29.92 ansible_ssh_pass=Shared@123
