@@ -1,0 +1,15 @@
+---
+- name: Run remote powershell script
+  hosts: win
+  tasks:
+    - name: Install PSWindowsUpdate
+      ansible.windows.win_powershell: 
+        script: |
+          $today = Get-Date -Format "ddMMyyyy-HHmms"
+          $hostname = hostname
+          $privateIP = (Get-NetIPConfiguration).IPv4Address.IPAddress
+          $outputpath = "C:\taskServiceRestart"
+          New-Item -Path $outputpath -ItemType Directory -ErrorAction Ignore
+
+          $serviceName = "wuauserv"
+          Restart-Service -Name $serviceName -Verbose *> $outputpath\$hostname-$privateIP-$today.txt -PassThru

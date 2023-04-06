@@ -1,0 +1,42 @@
+---
+- name: Check and start a Windows service
+  hosts: win
+
+  tasks:
+    - name: Set service startup mode to auto and ensure it is started
+      win_service:
+        name: wuauserv
+        start_mode: auto
+        state: started
+
+- name: windows rolling update
+  hosts: win
+  tasks:
+    - name: Install all critical and security updates
+      ansible.windows.win_updates:
+         category_names:
+           - CriticalUpdates
+           - SecurityUpdates
+           - DefinitionUpdates
+         state: installed
+         reboot: false
+         skip_optional: true
+         log_path: C:\Temp\windowsupdate.txt
+
+- name: Update servers
+  hosts: centos, ubuntu
+  become: true
+
+  tasks:
+   - name: Upgrade all Centos packages
+     ansible.builtin.yum:
+        update_cache: yes
+        name: '*'
+        state: latest
+     when: ansible_distribution == "CentOS"
+
+   - name: Upgrade the Ubuntu packages
+     ansible.builtin.apt:
+       update_cache: yes
+       state: latest
+     when: ansible_distribution == "Ubuntu"
